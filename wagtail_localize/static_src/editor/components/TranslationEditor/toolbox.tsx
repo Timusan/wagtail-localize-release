@@ -20,6 +20,7 @@ const ToolboxWrapper = styled.div`
 const ToolWrapper = styled.div`
     float: left;
     margin-bottom: 40px;
+    margin-right: 2em;
 `;
 
 const HiddenFileInput = styled.input`
@@ -50,7 +51,7 @@ const EditorToolbox: FunctionComponent<EditorToolboxProps> = ({
     machineTranslator,
     csrfToken,
     stringTranslations,
-    segments
+    segments,
 }) => {
     if (isLocked) {
         return <></>;

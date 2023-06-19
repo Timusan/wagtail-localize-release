@@ -20,7 +20,7 @@ import {
     SegmentOverride,
     SegmentOverrideAPI,
     Locale,
-    RelatedObjectSegment
+    RelatedObjectSegment,
 } from '.';
 import {
     EditorState,
@@ -33,7 +33,7 @@ import {
     OVERRIDE_SAVED,
     OVERRIDE_SAVE_SERVER_ERROR,
     DELETE_OVERRIDE,
-    OVERRIDE_DELETED
+    OVERRIDE_DELETED,
 } from './reducer';
 
 function saveTranslation(
@@ -45,7 +45,7 @@ function saveTranslation(
     dispatch({
         type: EDIT_STRING_TRANSLATION,
         segmentId: segment.id,
-        value: value
+        value: value,
     });
     if (value) {
         // Create/update the translation
@@ -57,10 +57,10 @@ function saveTranslation(
             method: 'PUT',
             body: formData,
             headers: {
-                'X-CSRFToken': csrfToken
-            }
+                'X-CSRFToken': csrfToken,
+            },
         })
-            .then(response => {
+            .then((response) => {
                 if (response.status == 200 || response.status == 201) {
                     return response.json();
                 } else {
@@ -71,13 +71,13 @@ function saveTranslation(
                 dispatch({
                     type: TRANSLATION_SAVED,
                     segmentId: segment.id,
-                    translation
+                    translation,
                 });
             })
             .catch(() => {
                 dispatch({
                     type: TRANSLATION_SAVE_SERVER_ERROR,
-                    segmentId: segment.id
+                    segmentId: segment.id,
                 });
             });
     } else {
@@ -86,18 +86,18 @@ function saveTranslation(
             credentials: 'same-origin',
             method: 'DELETE',
             headers: {
-                'X-CSRFToken': csrfToken
-            }
-        }).then(response => {
+                'X-CSRFToken': csrfToken,
+            },
+        }).then((response) => {
             if (response.status == 200 || response.status == 404) {
                 dispatch({
                     type: TRANSLATION_DELETED,
-                    segmentId: segment.id
+                    segmentId: segment.id,
                 });
             } else {
                 dispatch({
                     type: TRANSLATION_SAVE_SERVER_ERROR,
-                    segmentId: segment.id
+                    segmentId: segment.id,
                 });
             }
         });
@@ -113,7 +113,7 @@ function saveOverride(
     dispatch({
         type: EDIT_OVERRIDE,
         segmentId: segment.id,
-        value: value
+        value: value,
     });
 
     // Create/update the translation
@@ -125,10 +125,10 @@ function saveOverride(
         method: 'PUT',
         body: formData,
         headers: {
-            'X-CSRFToken': csrfToken
-        }
+            'X-CSRFToken': csrfToken,
+        },
     })
-        .then(response => {
+        .then((response) => {
             if (response.status == 200 || response.status == 201) {
                 return response.json();
             } else {
@@ -139,13 +139,13 @@ function saveOverride(
             dispatch({
                 type: OVERRIDE_SAVED,
                 segmentId: segment.id,
-                override
+                override,
             });
         })
         .catch(() => {
             dispatch({
                 type: OVERRIDE_SAVE_SERVER_ERROR,
-                segmentId: segment.id
+                segmentId: segment.id,
             });
         });
 }
@@ -157,7 +157,7 @@ function deleteOverride(
 ) {
     dispatch({
         type: DELETE_OVERRIDE,
-        segmentId: segment.id
+        segmentId: segment.id,
     });
 
     // Delete the override
@@ -165,18 +165,18 @@ function deleteOverride(
         credentials: 'same-origin',
         method: 'DELETE',
         headers: {
-            'X-CSRFToken': csrfToken
-        }
-    }).then(response => {
+            'X-CSRFToken': csrfToken,
+        },
+    }).then((response) => {
         if (response.status == 200 || response.status == 404) {
             dispatch({
                 type: OVERRIDE_DELETED,
-                segmentId: segment.id
+                segmentId: segment.id,
             });
         } else {
             dispatch({
                 type: OVERRIDE_SAVE_SERVER_ERROR,
-                segmentId: segment.id
+                segmentId: segment.id,
             });
         }
     });
@@ -200,7 +200,7 @@ const SingleLineTextArea: FunctionComponent<SingleLineTextAreaProps> = ({
     value,
     onChange,
     onHitEnter,
-    focusOnMount
+    focusOnMount,
 }) => {
     // Using a single line text area to get the wrapping behaviour we want. But it also allows the Grammarly plugin to work
 
@@ -247,8 +247,13 @@ const SingleLineTextArea: FunctionComponent<SingleLineTextAreaProps> = ({
 };
 
 export const BlockLabel = styled.h3`
-    color: var(--w-color-secondary-100);
-    border: 1px solid #f5f5f5;
+    border: 1px solid
+        var(--w-color-border-furniture, var(--w-color-secondary-100));
+    border-bottom: none;
+    color: var(
+        --w-color-surface-alert-information,
+        var(--w-color-secondary-100)
+    );
     padding-left: 11px;
     padding-right: 11px;
     padding-top: 7px;
@@ -260,16 +265,18 @@ export const BlockLabel = styled.h3`
 
 const BlockSegments = styled.ul`
     list-style-type: none;
-    border: 1px solid #eeeeee;
-    background-color: #f1f1f1;
+    border: 1px solid var(--w-color-border-furniture, var(--w-color-grey-100));
+    background-color: var(--w-color-surface-header, var(--w-color-grey-50));
     padding: 0;
     margin: 0;
 
     > li {
         &.errored {
-            background-color: #fee7e8;
+            background-color: var(--w-color-critical-50, #fee7e8);
+            color: var(--w-color-text-error, var(--w-color-grey-600));
             // !important required to override the border-bottom rule just below
             border: 1px solid var(--w-color-critical-100) !important;
+            border-left-width: 5px !important;
         }
 
         &.incomplete {
@@ -283,7 +290,7 @@ const BlockSegments = styled.ul`
         }
 
         &:not(:last-child) {
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid var(--w-color-border-furniture, #eeeeee);
         }
 
         &:after {
@@ -297,7 +304,11 @@ const BlockSegments = styled.ul`
 const SegmentFieldLabel = styled.h4`
     margin: 0;
     padding: 15px 20px;
-    background-color: var(--w-color-secondary-50);
+    background-color: var(
+        --w-color-surface-panel-information,
+        var(--w-color-secondary-50)
+    );
+    color: var(--w-text-surface-panel-information, var(--w-color-secondary));
     font-style: normal;
     font-weight: bold;
     padding-left: 20px;
@@ -308,7 +319,6 @@ const SegmentSource = styled.p`
     font-style: italic;
 
     &.title {
-        color: var(--w-color-grey-600);
         font-size: 1.875rem;
         font-weight: 800;
         line-height: 1.3;
@@ -331,14 +341,21 @@ const SegmentValue = styled.div`
 const ActionButton = styled.button`
     font-size: 0.8em;
     font-weight: bold;
-    color: var(--w-color-secondary);
-    background-color: var(--w-color-secondary-50);
-    border: 2px solid var(--w-color-secondary-100);
+    color: var(--w-color-text-button, var(--w-color-secondary));
+    background-color: var(
+        --w-color-surface-button-default,
+        var(--w-color-secondary-50)
+    );
+    border: 1px solid
+        var(--w-color-surface-button-default, var(--w-color-secondary-100));
     border-radius: 2px;
     padding: 5px 10px;
 
     &:hover {
-        background-color: var(--w-color-secondary-75);
+        background-color: var(
+            --w-color-surface-button-hover,
+            var(--w-color-secondary-75)
+        );
     }
 `;
 
@@ -376,13 +393,7 @@ const SegmentToolbar = styled.ul`
 const SegmentList = styled.ul`
     list-style-type: none;
     max-width: 1200px;
-    padding-left: 20px;
-    padding-right: 20px;
-
-    @media screen and (min-width: 800px) {
-        padding-left: 80px;
-        padding-right: 80px;
-    }
+    padding-left: 0;
 `;
 
 interface EditorStringSegmentProps {
@@ -402,7 +413,7 @@ const EditorStringSegment: FunctionComponent<EditorStringSegmentProps> = ({
     isEditing,
     setIsEditing,
     dispatch,
-    csrfToken
+    csrfToken,
 }) => {
     const [editingValue, setEditingValue] = React.useState(
         (translation && translation.value) || ''
@@ -432,7 +443,7 @@ const EditorStringSegment: FunctionComponent<EditorStringSegmentProps> = ({
                 <ActionButton onClick={onClickSave}>
                     {gettext('Save')}
                 </ActionButton>
-            </li>
+            </li>,
         ];
 
         value = (
@@ -463,7 +474,7 @@ const EditorStringSegment: FunctionComponent<EditorStringSegmentProps> = ({
                     {translation.isErrored ? (
                         <Icon name="warning" className="icon--red" />
                     ) : (
-                        <Icon name="tick" className="icon--green" />
+                        <Icon name="check" className="icon--green" />
                     )}
                 </>
             );
@@ -551,7 +562,7 @@ const EditorSynchronisedValueSegment: FunctionComponent<
     isEditing,
     setIsEditing,
     dispatch,
-    csrfToken
+    csrfToken,
 }) => {
     let comment = <></>;
     let buttons: React.ReactFragment[] = [];
@@ -564,7 +575,7 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                 {override.isErrored ? (
                     <Icon name="warning" className="icon--red" />
                 ) : (
-                    <Icon name="tick" className="icon--green" />
+                    <Icon name="check" className="icon--green" />
                 )}
             </>
         );
@@ -575,7 +586,7 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                     '%s',
                     sourceLocale.displayName
                 )}{' '}
-                <Icon name="tick" className="icon--green" />
+                <Icon name="check" className="icon--green" />
             </>
         );
     }
@@ -602,7 +613,7 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                 </ActionButton>,
                 <ActionButton onClick={onClickSave}>
                     {gettext('Save')}
-                </ActionButton>
+                </ActionButton>,
             ];
 
             value = (
@@ -634,14 +645,14 @@ const EditorSynchronisedValueSegment: FunctionComponent<
             (window as any).ModalWorkflow({
                 url: (window as any).chooserUrls.pageChooser,
                 urlParams: {
-                    page_type: widget.allowed_page_types.join(',')
+                    page_type: widget.allowed_page_types.join(','),
                 },
                 onload: (window as any).PAGE_CHOOSER_MODAL_ONLOAD_HANDLERS,
                 responses: {
-                    pageChosen: function(pageData: any) {
+                    pageChosen: function (pageData: any) {
                         saveOverride(segment, pageData.id, csrfToken, dispatch);
-                    }
-                }
+                    },
+                },
             });
         };
         if (!isLocked) {
@@ -664,15 +675,15 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                 url: (window as any).chooserUrls.imageChooser,
                 onload: (window as any).IMAGE_CHOOSER_MODAL_ONLOAD_HANDLERS,
                 responses: {
-                    chosen: function(imageData: any) {
+                    chosen: function (imageData: any) {
                         saveOverride(
                             segment,
                             imageData.id,
                             csrfToken,
                             dispatch
                         );
-                    }
-                }
+                    },
+                },
             });
         };
         if (!isLocked) {
@@ -695,15 +706,15 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                 url: (window as any).chooserUrls.documentChooser,
                 onload: (window as any).DOCUMENT_CHOOSER_MODAL_ONLOAD_HANDLERS,
                 responses: {
-                    chosen: function(documentData: any) {
+                    chosen: function (documentData: any) {
                         saveOverride(
                             segment,
                             documentData.id,
                             csrfToken,
                             dispatch
                         );
-                    }
-                }
+                    },
+                },
             });
         };
         if (!isLocked) {
@@ -726,15 +737,15 @@ const EditorSynchronisedValueSegment: FunctionComponent<
                 url: widget.chooser_url,
                 onload: (window as any).SNIPPET_CHOOSER_MODAL_ONLOAD_HANDLERS,
                 responses: {
-                    snippetChosen: function(snippetData: any) {
+                    snippetChosen: function (snippetData: any) {
                         saveOverride(
                             segment,
                             snippetData.id,
                             csrfToken,
                             dispatch
                         );
-                    }
-                }
+                    },
+                },
             });
         };
         if (!isLocked) {
@@ -788,7 +799,7 @@ const EditorSynchronisedValueSegment: FunctionComponent<
             <SegmentValue>{value}</SegmentValue>
             <SegmentToolbar>
                 <li>{comment}</li>
-                {buttons.map(button => (
+                {buttons.map((button) => (
                     <li>{button}</li>
                 ))}
             </SegmentToolbar>
@@ -827,13 +838,13 @@ const EditorRelatedObjectSegment: FunctionComponent<
                     {gettext('segments translated')}
                     {segment.translationProgress.translatedSegments ==
                         segment.translationProgress.totalSegments && (
-                        <Icon name="tick" className="icon--green" />
+                        <Icon name="check" className="icon--green" />
                     )}
                 </>
             );
         } else {
-            // Segment translated without Wagtail localize. Just show a tick
-            message = <Icon name="tick" className="icon--green" />;
+            // Segment translated without Wagtail localize. Just show a check
+            message = <Icon name="check" className="icon--green" />;
         }
     } else {
         // Not translated
@@ -896,11 +907,11 @@ const EditorSegmentList: FunctionComponent<EditorSegmentListProps> = ({
     segmentOverrides,
     editingSegments,
     dispatch,
-    csrfToken
+    csrfToken,
 }) => {
     // Group segments by field/block
     const segmentsByFieldBlock: Map<string, Segment[]> = new Map();
-    segments.forEach(segment => {
+    segments.forEach((segment) => {
         const field = segment.location.field;
         const blockId = segment.location.blockId || 'null';
         const key = `${field}/${blockId}`;
@@ -920,12 +931,12 @@ const EditorSegmentList: FunctionComponent<EditorSegmentListProps> = ({
                 dispatch({
                     type: 'set-editing-mode',
                     segmentId,
-                    editing
+                    editing,
                 });
             };
 
             // Render segments in field/block
-            const segmentsRendered = segments.map(segment => {
+            const segmentsRendered = segments.map((segment) => {
                 switch (segment.type) {
                     case 'string': {
                         return (

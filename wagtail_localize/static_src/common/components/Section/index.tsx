@@ -5,9 +5,12 @@ const Title = styled.div`
     box-sizing: border-box;
     height: 40px;
     -webkit-font-smoothing: auto;
-    background-color: var(--w-color-secondary-50);
-    color: var(--w-color-secondary);
-    padding: 0.9em 0 0.9em 95px;
+    background-color: var(
+        --w-color-surface-panel-information,
+        var(--w-color-secondary-50)
+    );
+    color: var(--w-text-surface-panel-information, var(--w-color-secondary));
+    padding: 1em 0 1em 1.5em;
     font-size: 0.95em;
     margin: 0;
     line-height: 1.5em;
